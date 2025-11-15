@@ -43,6 +43,13 @@ export class StreamableHttpRunner extends TransportRunnerBase {
 
         app.enable("trust proxy"); // needed for reverse proxy support
         app.use(express.json());
+
+        // Health check endpoint
+        app.get("/health", (req, res) => {
+            res.status(200).json({ status: "ok" });
+        });
+
+        // Apply custom headers middleware
         app.use((req, res, next) => {
             for (const [key, value] of Object.entries(this.userConfig.httpHeaders)) {
                 const header = req.headers[key.toLowerCase()];
